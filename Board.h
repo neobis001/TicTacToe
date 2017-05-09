@@ -286,7 +286,7 @@ public:
     int* get_board_layout() {
         //return an array of length 2 with items in this order:
         //1. num_rows 2. num_cols 3. total_board_size
-        int board_layout[3]{num_rows, num_cols, total_board_size};
+        int* board_layout = new int[3]{num_rows, num_cols, total_board_size};
         return board_layout;
     }
 

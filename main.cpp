@@ -44,6 +44,8 @@ void process_winner(WINNER winner) {
     }
 }
 
+
+
 int main()
 {
     //playing a game
@@ -81,6 +83,7 @@ int main()
     int num_rows = *(layout + 0);
     int num_cols = *(layout + 1);
     int total_board_size = *(layout + 2);
+    delete layout;
     print_board_rep_layout(copied, num_rows, num_cols);
 
     //checking winner
@@ -91,3 +94,4 @@ int main()
 
     return 0;
 }
+
