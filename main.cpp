@@ -46,7 +46,7 @@ void process_winner(WINNER winner) {
 
 int main()
 {
-    //playing a game idea
+    //playing a game
     //
     //
     int input_rows = 3;
