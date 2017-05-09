@@ -1,5 +1,7 @@
 #include <iostream>
+#include <string>
 #include "Board.h"
+#include "Gui.h"
 
 using namespace std;
 
@@ -45,9 +47,9 @@ void process_winner(WINNER winner) {
 }
 
 
-
 int main()
 {
+
     //playing a game
     //
     //
@@ -83,7 +85,6 @@ int main()
     int num_rows = *(layout + 0);
     int num_cols = *(layout + 1);
     int total_board_size = *(layout + 2);
-    delete layout;
     print_board_rep_layout(copied, num_rows, num_cols);
 
     //checking winner
@@ -92,6 +93,21 @@ int main()
     WINNER winner = board.check_winner();
     process_winner(winner);
 
+
+
+    string tPos[9];
+    for (int i = 0; i < 9; i++) {
+        tPos[i] = to_string(i + 1);
+    }
+    Gui gui;
+    if (gui.initGui() == 1) {
+        gui.printGui(tPos);
+    }
+    else if (gui.initGui() == 2) {
+        gui.aiGui();
+    }
+
     return 0;
+
 }
 
