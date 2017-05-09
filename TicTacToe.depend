@@ -1,4 +1,7 @@
 # depslib dependency file v1.0
-1494272144 source:c:\users\nicolas\desktop\scripts\tictactoe\main.cpp
+1494304424 source:c:\users\nicolas\desktop\scripts\tictactoe\main.cpp
 	<iostream>
+	"Board.h"
+
+1494304219 c:\users\nicolas\desktop\scripts\tictactoe\board.h
 
