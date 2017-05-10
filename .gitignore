@@ -50,3 +50,5 @@ Temporary Items
 *.cbp
 *.depend
 *.layout
+*.o
+*.exe
