@@ -1,97 +1,37 @@
 #include <iostream>
+#include <string>
 #include "Board.h"
+#include "Gui.h"
 
 using namespace std;
 
-char const* get_entry_rep(MOVE entry) {
-    //given an entry from the board, return a "string" representation
-    char const* entry_rep;
-    if (entry == MOVE::EMPTY) {
-        entry_rep = "EMPTY";
-    } else if (entry == MOVE::O_PIECE) {
-        entry_rep = "O_PIECE";
-    } else {
-        entry_rep = "X_PIECE";
-    }
-    return entry_rep;
-}
-
-void print_board_rep_layout(MOVE* board_copy, int num_rows, int num_cols) {
-    //given a board copy and layout size, print out a basic board layout
-    for (int row_index = 0; row_index < num_rows; row_index++) {
-        for (int col_index = 0; col_index < num_cols; col_index++) {
-            int general_index = row_index * num_cols + col_index;
-            MOVE indexed_value = *(board_copy + general_index);
-
-            char const* value_rep = get_entry_rep(indexed_value);
-            cout << value_rep  << " ";
-        }
-        cout << endl;
-    }
-}
-
-void process_winner(WINNER winner) {
-    switch (winner) {
-    case WINNER::X_WINNER:
-        cout << "x is the winner" << endl;
-        break;
-    case WINNER::O_WINNER:
-        cout << "o is the winner" << endl;
-        break;
-    case WINNER::NONE:
-        cout << "nobody is the winner" << endl;
-        break;
-    }
-}
-
-
-
-int main()
+int main() ///DEMO EXAMPLE!
 {
-    //playing a game
-    //
-    //
-    int input_rows = 3;
-    int input_cols = 3;
-    int win_size = 3;
-    PLAYER first_player = PLAYER::O_PLAYER;
-    Board board(input_rows, input_cols, win_size, first_player);
-    board.process_move(0,0); //o's move
-    board.process_move(1,0); //x's move
-
-    try {
-        board.process_move(0,0);
-    } catch (InvalidMoveError e) {
-        cout << "InvalidMoveError, " << e.get_error() << endl;
+    //Array with values to apear
+    string tPos[9];
+    for (int i = 0; i < 9; i++) {
+        tPos[i] = to_string(i + 1);
     }
 
-    board.process_move(0,1); //o's move
-    board.process_move(1,1); //x's move
-    board.process_move(0,2);
+    Gui gui; //Creating gui
+    gui.specifyOS(gui.WINAPI32); //Specify platform (Current Windows)
+    gui.initGui(); //Clears the screen and start gui menu with pvp, pve, credits, exit options
 
-    try {
-        board.process_move(2,0);
-    } catch (GameOverError e) {
-        cout << "GameOverError, " << e.get_error() << endl;
-    }
+    //When selected either 1.PVP or 2.PVE and the player enters game you can get the gamemode:
+    if (gui.getCurrentGameMode() == gui.NONE) { cerr << "Gamemode error (GMD_ERR)"<<endl; }          //None if gui.initGui(); function never runs or runs after the request of gamemode line
+    if (gui.getCurrentGameMode() == gui.DEFAULT) { return 1; /*Maybe here gui.printGui(tPos) too*/}  //Default state, if other than the requested number is entered
+    if (gui.getCurrentGameMode() == gui.PVP) { gui.printGui(tPos); gui.getCurrnentInputValue();}     //PVP if the option 1 from the start menu is selected
+    if (gui.getCurrentGameMode() == gui.PVAI_L1) { /*Call ai function ai(1);*/ }                     //Ai level 1: if the option 2 from the start menu is selected and then difficulty Easy
+    if (gui.getCurrentGameMode() == gui.PVAI_L2) { /*Call ai function ai(2);*/ }                     //Ai level 2: if the option 2 from the start menu is selected and then difficulty Normal
+    if (gui.getCurrentGameMode() == gui.PVAI_L3) { /*Call ai function ai(3);*/ }                     //Ai level 3: if the option 2 from the start menu is selected and then difficulty Hard
 
-    //getting data from board object
-    //
-    //
-    MOVE* copied = board.get_board_copy();
-    int* layout = board.get_board_layout();
-    int num_rows = *(layout + 0);
-    int num_cols = *(layout + 1);
-    int total_board_size = *(layout + 2);
-    delete layout;
-    print_board_rep_layout(copied, num_rows, num_cols);
-
-    //checking winner
-    //
-    //
-    WINNER winner = board.check_winner();
-    process_winner(winner);
+    ///NOTES
+    // In the if statement you can display a text or the gui.printGui(tPos); that will print the tictactoe gui with the tPos string array as values and then it will ask for input.
+    // The logic is that you will print the gui with gui.printGui(tPos); and get the input value with gui.getCurrnentInputValue(); update the tPos string array and repeat. Mabe call a function that does that
+    // If not added the if statements, when choosing an option the game will exit and close(Nothing to do). If initGui() apears below again you have to manage the input cases again.
+    // If not valid input value the getCurrnentInputValue() will be zero, and the message "Not valid input" will apear on the screen
 
     return 0;
+
 }
 
