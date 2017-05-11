@@ -7,31 +7,52 @@ using namespace std;
 
 int main() ///DEMO EXAMPLE!
 {
-    //Array with values to apear
-    string tPos[9];
+
+    string tPos[9]; //Array of displayed positions
     for (int i = 0; i < 9; i++) {
         tPos[i] = to_string(i + 1);
     }
 
-    Gui gui; //Creating gui
-    gui.specifyOS(gui.WINAPI32); //Specify platform (Current Windows)
-    gui.initGui(); //Clears the screen and start gui menu with pvp, pve, credits, exit options
+    //Create gui and specify os
+    Gui gui;
+    gui.specifyOS(gui.WINAPI32);
 
-    //When selected either 1.PVP or 2.PVE and the player enters game you can get the gamemode:
-    if (gui.getCurrentGameMode() == gui.NONE) { cerr << "Gamemode error (GMD_ERR)"<<endl; }          //None if gui.initGui(); function never runs or runs after the request of gamemode line
-    if (gui.getCurrentGameMode() == gui.DEFAULT) { return 1; /*Maybe here gui.printGui(tPos) too*/}  //Default state, if other than the requested number is entered
-    if (gui.getCurrentGameMode() == gui.PVP) { gui.printGui(tPos); gui.getCurrnentInputValue();}     //PVP if the option 1 from the start menu is selected
-    if (gui.getCurrentGameMode() == gui.PVAI_L1) { /*Call ai function ai(1);*/ }                     //Ai level 1: if the option 2 from the start menu is selected and then difficulty Easy
-    if (gui.getCurrentGameMode() == gui.PVAI_L2) { /*Call ai function ai(2);*/ }                     //Ai level 2: if the option 2 from the start menu is selected and then difficulty Normal
-    if (gui.getCurrentGameMode() == gui.PVAI_L3) { /*Call ai function ai(3);*/ }                     //Ai level 3: if the option 2 from the start menu is selected and then difficulty Hard
+    while (true) { //Start while loop game
 
-    ///NOTES
-    // In the if statement you can display a text or the gui.printGui(tPos); that will print the tictactoe gui with the tPos string array as values and then it will ask for input.
-    // The logic is that you will print the gui with gui.printGui(tPos); and get the input value with gui.getCurrnentInputValue(); update the tPos string array and repeat. Mabe call a function that does that
-    // If not added the if statements, when choosing an option the game will exit and close(Nothing to do). If initGui() apears below again you have to manage the input cases again.
-    // If not valid input value the getCurrnentInputValue() will be zero, and the message "Not valid input" will apear on the screen
+        gui.initGui(); //Init gui, display start menu with pvp, pve, credits and exit comp.
+        if (gui.getCurrentGameMode() == gui.PVP) { //If first gamemode selected other oprions gui.PVAI_L1, gui.PVAI_L2, gui.PVAI_L3
 
-    return 0;
+            int x = 0; //Variable that will get the player input
+            int player = gui.playerGui(false); //Display player screen (Change false to true only on pve)
+            for (int i = 0; i < 9; i++) { //9 times eatch tictactoe game
+
+                if (player == 1) { gui.printGui(tPos, 1); } //If player X plays first he shall do his move
+                else if (player == 2) { gui.printGui(tPos, 2); } //Else the O should start first
+
+                x = gui.getCurrnentInputValue(); //Get input value //TODO: Update the tictactoe table by changing tPos[] values
+
+                while (x < 1 || x > 9 ) { //If out of bounds loop until entered valid value
+                    if (player == 1) { gui.printGui(tPos, 3); } // The 3 is for asking X to reenter a value
+                    else if (player == 2) { gui.printGui(tPos, 4); } //The 4 is for asking O to reenter a value
+                    x = gui.getCurrnentInputValue(); //Check if correct, else loop  //TODO: Check if selected already occupied position
+                }
+
+                if (player == 1) { player = 2; } //Change players order
+                else if (player == 2) { player = 1; } //The same is true if O is first
+
+            }// After 9 moves someone won! //TODO: match 3 if in a row..
+
+            gui.clear(); //Clear the screen
+            //Display the following message
+            cout << "" << endl;
+            cout << " Thanks for playing!" << endl;
+            cout << "     X has won!" << endl;
+            cout << "" << endl;
+            cout << " Press any key to continue.." << endl;
+            gui.pause(); //Pause until player presses a key
+
+        } //After pressing a key the loop will start over again and reinitialise the GUI
+    }
 
 }
 

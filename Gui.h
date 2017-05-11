@@ -37,18 +37,6 @@ private: //Variables
 
 private: //Functions
 
-    void clear() {
-        if (console = OS_TYPE::WINAPI32) {system("cls");}
-        if (console = OS_TYPE::UNIXBASED) {system("clear");}
-        else {system("clear");}
-    }
-
-    void pause() {
-        if (console = OS_TYPE::WINAPI32) {system("pause");}
-        if (console = OS_TYPE::UNIXBASED) {system("stty -icanon -echo; dd if=/dev/tty of=/dev/null bs=1 count=1 2>/dev/null; stty icanon echo");}
-        else {system("stty -icanon -echo; dd if=/dev/tty of=/dev/null bs=1 count=1 2>/dev/null; stty icanon echo");}
-    }
-
     bool isNum(const std::string& s)
     {
         std::string::const_iterator it = s.begin();
@@ -56,16 +44,26 @@ private: //Functions
         return !s.empty() && it == s.end();
     }
 
-    int selNum(int minNum, int maxNum, int &saveValue) {
+    int selNum(int minNum, int maxNum, int &saveValue, int player = 0) {
         string value;
+        string turn;
+
+        if (player == 1) { turn = " X:"; }
+        else if (player == 2) { turn = " O:"; }
+        else if (player == 3) { turn = " X: Try again: "; }
+        else if (player == 4) { turn = " O: Try again: "; }
+        else { turn = ""; }
+
         cout << "" << endl;
-        cout << " Select a number: ";
-        cin >> setw(2) >> value;
+        cout << turn << " Select a number: ";
+        cin >> setw(10) >> value;
 
         if (isNum(value)) { saveValue = stoi(value); }
         else { saveValue = 0; }
+        if (saveValue < 0 || saveValue > 100) { saveValue = 0; }
+
         if (saveValue >= minNum && saveValue <= maxNum) {
-            cout << " Selected " << saveValue << endl;
+            cout << turn << " Selected " << saveValue << endl;
             return saveValue;
         }
         else {
@@ -111,7 +109,7 @@ private: //Functions
         cout << " 1. Yes" <<endl;
         cout << " 2. No" <<endl;
         cout << "" <<endl;
-        selNum(1,2, exitValue);
+        selNum(1, 2, exitValue);
         if (exitValue == 1) { exit(0); }
         else { initGui(); }
     }
@@ -124,7 +122,19 @@ public:
         this->console = console;
     }
 
-    bool printGui(string tPos[]) {
+      void clear() {
+        if (console = OS_TYPE::WINAPI32) {system("cls");}
+        if (console = OS_TYPE::UNIXBASED) {system("clear");}
+        else {system("clear");}
+    }
+
+    void pause() {
+        if (console = OS_TYPE::WINAPI32) {system("pause");}
+        if (console = OS_TYPE::UNIXBASED) {system("stty -icanon -echo; dd if=/dev/tty of=/dev/null bs=1 count=1 2>/dev/null; stty icanon echo");}
+        else {system("stty -icanon -echo; dd if=/dev/tty of=/dev/null bs=1 count=1 2>/dev/null; stty icanon echo");}
+    }
+
+    bool printGui(string tPos[], int player) {
         clear();
         try {
             cout << " Welcome to TicTacToe" << endl;
@@ -138,7 +148,7 @@ public:
                 x = x + 3;
             }
 
-            selNum(1, 9, pvpValue);
+            selNum(1, 9, pvpValue, player);
             return true;
 
         } catch(...) {
@@ -156,7 +166,7 @@ public:
         cout << " 2. Player vs computer" <<endl;
         cout << " 3. Game credits" <<endl;
         cout << " 4. Exit game!" <<endl;
-        selNum(1,4, startValue);
+        selNum(1, 4, startValue);
         clear();
         if (startValue == 0) { initGui(); }
         else if (startValue == 1) { gamemode = GME_MODE::PVP; }
@@ -165,6 +175,25 @@ public:
         else if (startValue == 4) { exitGui(); }
         else { gamemode = GME_MODE::DEFAULT; }
         return;
+    }
+
+     int playerGui(bool isAi = false) {
+        clear();
+        int x = 0;
+        cout << " TicTacToe v1.0" <<endl;
+        cout << "" <<endl;
+        if (isAi) { cout << " PLAY AS:" <<endl; }
+        else { cout << " WHO PLAYS FIRST:" <<endl; }
+        cout << " 1. X" <<endl;
+        cout << " 2. O" <<endl;
+        selNum(1,2, x);
+        if (x == 0) {
+            cout << "Invalid input: try again.." << endl;
+            playerGui(isAi);
+        }
+        else if (x == 1) { return 1; }
+        else if (x == 2) { return 2; }
+        else { return 0; }
     }
 
     int getCurrentGameMode() {
