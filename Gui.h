@@ -3,6 +3,8 @@
 
 #include <cstdlib>
 #include <iomanip>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -11,6 +13,7 @@ class Gui {
 public: //Enums
 
     enum OS_TYPE {
+
          WINAPI32,
          UNIXBASED,
          DEFAULT_OS
@@ -23,6 +26,14 @@ public: //Enums
          PVAI_L1,
          PVAI_L2,
          PVAI_L3
+    };
+
+    enum PLAYER_SYMBOL {
+        PLAYER_NONE,
+        PLAYER_X,
+        PLAYER_Y,
+        PLAYER_TRY_X,
+        PLAYER_TRY_Y
     };
 
 private: //Variables
@@ -44,23 +55,24 @@ private: //Functions
         return !s.empty() && it == s.end();
     }
 
-    int selNum(int minNum, int maxNum, int &saveValue, int player = 0) {
+    int selNum(int minNum, int maxNum, int &saveValue, int player = PLAYER_NONE) {
         string value;
         string turn;
 
-        if (player == 1) { turn = " X:"; }
-        else if (player == 2) { turn = " O:"; }
-        else if (player == 3) { turn = " X: Try again: "; }
-        else if (player == 4) { turn = " O: Try again: "; }
+        if (player == PLAYER_X) { turn = " X:"; }
+        else if (player == PLAYER_Y) { turn = " O:"; }
+        else if (player == PLAYER_TRY_X) { turn = " X: Try again: "; }
+        else if (player == PLAYER_TRY_Y) { turn = " O: Try again: "; }
         else { turn = ""; }
 
         cout << "" << endl;
         cout << turn << " Select a number: ";
-        cin >> setw(10) >> value;
+        cin >> value;
 
-        if (isNum(value)) { saveValue = stoi(value); }
+        if (value.length() > 8) { value = "0";}
+        if (isNum(value)) { istringstream copyVar(value);
+        copyVar >> saveValue; }
         else { saveValue = 0; }
-        if (saveValue < 0 || saveValue > 100) { saveValue = 0; }
 
         if (saveValue >= minNum && saveValue <= maxNum) {
             cout << turn << " Selected " << saveValue << endl;
