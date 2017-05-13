@@ -248,7 +248,7 @@ public:
     Board(int num_rows, int num_cols, int win_size, PLAYER first_player):
         current_player(first_player), win_size(win_size), num_rows(num_rows), num_cols(num_cols){
         //initialize total board size as well, and then set up an empty board
-        total_board_size = num_rows * num_cols;
+        total_board_size = (num_rows + 1) * (num_cols + 1);
         initialize_empty_board();
     }
 

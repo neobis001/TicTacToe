@@ -5,109 +5,92 @@
 
 using namespace std;
 
-char const* get_entry_rep(MOVE entry) {
-    //given an entry from the board, return a "string" representation
-    char const* entry_rep;
-    if (entry == MOVE::EMPTY) {
-        entry_rep = "EMPTY";
-    } else if (entry == MOVE::O_PIECE) {
-        entry_rep = "O_PIECE";
-    } else {
-        entry_rep = "X_PIECE";
-    }
-    return entry_rep;
-}
-
-void print_board_rep_layout(MOVE* board_copy, int num_rows, int num_cols) {
-    //given a board copy and layout size, print out a basic board layout
-    for (int row_index = 0; row_index < num_rows; row_index++) {
-        for (int col_index = 0; col_index < num_cols; col_index++) {
-            int general_index = row_index * num_cols + col_index;
-            MOVE indexed_value = *(board_copy + general_index);
-
-            char const* value_rep = get_entry_rep(indexed_value);
-            cout << value_rep  << " ";
-        }
-        cout << endl;
-    }
-}
-
-void process_winner(WINNER winner) {
-    switch (winner) {
-    case WINNER::X_WINNER:
-        cout << "x is the winner" << endl;
-        break;
-    case WINNER::O_WINNER:
-        cout << "o is the winner" << endl;
-        break;
-    case WINNER::NONE:
-        cout << "nobody is the winner" << endl;
-        break;
-    }
-}
-
 
 int main()
 {
+    enum WINNER_PLR {
+        TIE,
+        PLR_X,
+        PLR_O
+    };
 
-    //playing a game
-    //
-    //
+    string tPos[9];
+    Gui gui;
+    gui.specifyOS(gui.WINAPI32);
+
     int input_rows = 3;
     int input_cols = 3;
     int win_size = 3;
-    PLAYER first_player = PLAYER::O_PLAYER;
-    Board board(input_rows, input_cols, win_size, first_player);
-    board.process_move(0,0); //o's move
-    board.process_move(1,0); //x's move
+    bool endGame = false;
+    PLAYER first_player;
 
-    try {
-        board.process_move(0,0);
-    } catch (InvalidMoveError e) {
-        cout << "InvalidMoveError, " << e.get_error() << endl;
+    WINNER winner;
+    WINNER_PLR player = WINNER_PLR::TIE;
+
+    while (true) {
+
+        gui.initGui();
+        if (gui.getCurrentGameMode() == gui.PVP) {
+            int x = 0;
+            int player = gui.playerGui(false);
+            for (int i = 0; i < 9; i++) {
+                tPos[i] = to_string(i + 1);
+            }
+
+            if (player == 1) { first_player = PLAYER::X_PLAYER; }
+            if (player == 2) { first_player = PLAYER::O_PLAYER; }
+            Board board(input_rows, input_cols, win_size, first_player);
+            for (int i = 0; i < 9; i++) {
+
+                if (player == 1) { gui.printGui(tPos, 1); }
+                else if (player == 2) { gui.printGui(tPos, 2); }
+                x = gui.getCurrnentInputValue();
+
+                while (x < 1 || x > 9 || tPos[x - 1] == "X" || tPos[x - 1] == "O") {
+                    if (player == 1) { gui.printGui(tPos, 3); }
+                    else if (player == 2) { gui.printGui(tPos, 4); }
+                    x = gui.getCurrnentInputValue();
+                }
+
+                if (player == 1) { tPos[x - 1] = "X"; player = 2; }
+                else if (player == 2) { tPos[x - 1] = "O"; player = 1; }
+
+                if (x < 4) { board.process_move(1, x); }
+                else if (x < 7) { board.process_move(2, x - 3); }
+                else { board.process_move(3, x - 6); }
+
+                winner = board.check_winner();
+                switch (winner) {
+                    case WINNER::X_WINNER:
+                        endGame = true;
+                        player = WINNER_PLR::PLR_X;
+                        break;
+                    case WINNER::O_WINNER:
+                        endGame = true;
+                        player = WINNER_PLR::PLR_O;
+                        break;
+                    case WINNER::NONE:
+                        break;
+                }
+
+                if (endGame) {
+                    i = 9;
+                    endGame = false;
+                }
+
+            }
+
+            gui.clear();
+            cout << "" << endl;
+            cout << " Thanks for playing!" << endl;
+            if (player == PLR_X) { cout << "     X has won!" << endl; }
+            if (player == PLR_O) { cout << "     O has won!" << endl; }
+            if (player == TIE) { cout << "     It's a tie!" << endl; }
+            cout << "" << endl;
+            cout << " Press any key to continue.." << endl;
+            gui.pause();
+
+
+        }
     }
-
-    board.process_move(0,1); //o's move
-    board.process_move(1,1); //x's move
-    board.process_move(0,2);
-
-    try {
-        board.process_move(2,0);
-    } catch (GameOverError e) {
-        cout << "GameOverError, " << e.get_error() << endl;
-    }
-
-    //getting data from board object
-    //
-    //
-    MOVE* copied = board.get_board_copy();
-    int* layout = board.get_board_layout();
-    int num_rows = *(layout + 0);
-    int num_cols = *(layout + 1);
-    int total_board_size = *(layout + 2);
-    print_board_rep_layout(copied, num_rows, num_cols);
-
-    //checking winner
-    //
-    //
-    WINNER winner = board.check_winner();
-    process_winner(winner);
-
-
-
-    string tPos[9];
-    for (int i = 0; i < 9; i++) {
-        tPos[i] = to_string(i + 1);
-    }
-    Gui gui;
-    if (gui.initGui() == 1) {
-        gui.printGui(tPos);
-    }
-    else if (gui.initGui() == 2) {
-        gui.aiGui();
-    }
-
-    return 0;
-
 }
-
