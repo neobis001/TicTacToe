@@ -1,6 +1,9 @@
 #ifndef BOARD_H_INCLUDED
 #define BOARD_H_INCLUDED
 
+#include <stdio.h>
+using namespace std;
+
 enum MOVE {
     EMPTY,
     X_PIECE,
@@ -64,6 +67,7 @@ private:
     void place_indexed_move(MOVE move_input, int board_index) {
         //using a board_index that's based on a board represented by a single_dimensional array, attempt to place a move
         if (board_index < 0 || board_index >= total_board_size) {
+            cout << "Raising InvalidMoveError, with board index " << board_index << endl;
             throw InvalidMoveError("Board::place_move, the board index is out of range");
         } else if (*(board_grid + board_index) != MOVE::EMPTY) {
             throw InvalidMoveError("Board::place_move, the board index already has a move placed in it");
@@ -186,7 +190,7 @@ private:
         int max_row_start  = num_rows - win_size;
         int max_col_start = num_cols - win_size;
         for (int row_index = 0; row_index <= max_row_start; row_index++) {
-            for (int col_index = 0; col_index < max_col_start; col_index++) {
+            for (int col_index = 0; col_index <= max_col_start; col_index++) {
                 int entry_index = get_move_index(row_index, col_index);
                 MOVE entry_of_interest = board_grid[entry_index];
 
