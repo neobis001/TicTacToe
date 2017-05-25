@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <iomanip>
+#include <sstream>
 
 using namespace std;
 
@@ -58,7 +59,10 @@ private: //Functions
         cout << turn << " Select a number: ";
         cin >> setw(10) >> value;
 
-        if (isNum(value)) { saveValue = stoi(value); }
+        if (isNum(value)) {
+            istringstream copyVar(value);
+            copyVar >> saveValue;
+        }
         else { saveValue = 0; }
         if (saveValue < 0 || saveValue > 100) { saveValue = 0; }
 
@@ -122,16 +126,25 @@ public:
         this->console = console;
     }
 
-      void clear() {
-        if (console = OS_TYPE::WINAPI32) {system("cls");}
-        if (console = OS_TYPE::UNIXBASED) {system("clear");}
-        else {system("clear");}
+    void clear() {
+        if (console == OS_TYPE::WINAPI32) {
+            system("cls");}
+        else if (console == OS_TYPE::UNIXBASED) {
+            system("stty -icanon -echo; dd if=/dev/tty of=/dev/null bs=1 count=1 2>/dev/null; stty icanon echo");
+        }
+        else {
+            system("clear");
+        }
     }
 
     void pause() {
-        if (console = OS_TYPE::WINAPI32) {system("pause");}
-        if (console = OS_TYPE::UNIXBASED) {system("stty -icanon -echo; dd if=/dev/tty of=/dev/null bs=1 count=1 2>/dev/null; stty icanon echo");}
-        else {system("stty -icanon -echo; dd if=/dev/tty of=/dev/null bs=1 count=1 2>/dev/null; stty icanon echo");}
+        if (console == OS_TYPE::WINAPI32) {
+            system("pause");
+        } else if (console == OS_TYPE::UNIXBASED) {
+            system("stty -icanon -echo; dd if=/dev/tty of=/dev/null bs=1 count=1 2>/dev/null; stty icanon echo");
+        } else {
+            system("stty -icanon -echo; dd if=/dev/tty of=/dev/null bs=1 count=1 2>/dev/null; stty icanon echo");
+        }
     }
 
     bool printGui(string tPos[], int player) {
@@ -142,6 +155,7 @@ public:
 
             for (int x = 0; x < 9;) {
                 cout << "      |     |     " << endl;
+
                 cout << "   "<<tPos[x]<<"  |  "<<tPos[x + 1]<<"  |  "<<tPos[x + 2]<< endl;
                 if (x != 6) { cout << " _____|_____|_____" << endl; }
                 else { cout << "      |     |     " << endl;}

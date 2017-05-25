@@ -1,7 +1,37 @@
 # depslib dependency file v1.0
-1494352953 source:c:\users\nicolas\desktop\scripts\tictactoe\main.cpp
+1494872208 source:c:\users\nicolas\desktop\scripts\tictactoe\main.cpp
+	<iostream>
+	<string>
+	"Board.h"
+	"Gui.h"
+	"Test.h"
+
+1494873044 c:\users\nicolas\desktop\scripts\tictactoe\board.h
+	<stdio.h>
+
+1494799267 c:\users\nicolas\desktop\scripts\tictactoe\gui.h
+	<cstdlib>
+	<iomanip>
+	<sstream>
+
+1494631621 source:c:\users\nicolas\desktop\scripts\tictactoe\main2.cpp
 	<iostream>
 	"Board.h"
 
-1494353260 c:\users\nicolas\desktop\scripts\tictactoe\board.h
+1494801336 c:\users\nicolas\desktop\scripts\tictactoe\test.h
+	<iostream>
+	"Board.h"
+
+1494800334 source:c:\users\nicolas\desktop\scripts\tictactoe\main6.cpp
+	<iostream>
+	<string>
+	"Board.h"
+	"Gui.h"
+	"Test.h"
+
+1495479228 source:c:\users\nicolas\desktop\scripts\tictactoe\main7.cpp
+	<iostream>
+	<string>
+	"Board.h"
+	"Gui.h"
 

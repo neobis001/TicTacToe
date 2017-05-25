@@ -3,8 +3,6 @@
 #include "Board.h"
 #include "Gui.h"
 
-#include "Test.h"
-
 using namespace std;
 
 int main()
@@ -15,6 +13,7 @@ int main()
         PLR_O
     };
 
+    //string tPos[9];
     Gui gui;
     gui.specifyOS(gui.WINAPI32);
 
@@ -22,10 +21,10 @@ int main()
     int input_cols = 3;
     int win_size = 3;
     bool endGame = false;;
-    PLAYER first_player;// = PLAYER::O_PLAYER;
-    //Board board(input_rows, input_cols, win_size, first_player);
+    PLAYER first_player = PLAYER::O_PLAYER;
+    Board board(input_rows, input_cols, win_size, first_player);
     WINNER winner;
-    WINNER_PLR player_winner = WINNER_PLR::TIE;
+    WINNER_PLR player = WINNER_PLR::TIE;
     string tPos[9];
 
     while (!endGame) {
@@ -40,9 +39,6 @@ int main()
                             convert << i + 1;
                             tPos[i] = convert.str();
              }
-             if (player == 1) { first_player = PLAYER::X_PLAYER; }
-             if (player == 2) { first_player = PLAYER::O_PLAYER; }
-            Board board(input_rows, input_cols, win_size, first_player);
 
             for (int i = 0; i < 9; i++) {
                 if (player == 1) { gui.printGui(tPos, 1); }
@@ -62,37 +58,31 @@ int main()
                 else if (x < 7) { board.process_move(1, (x-1) - 3); }
                 else { board.process_move(2, (x-1) - 6); }
 
-                test_print(board);
-
                 winner = board.check_winner();
-                if (winner == WINNER::X_WINNER) {
-                    cout << "X is the winner" << endl;
-                    player_winner = WINNER_PLR::PLR_X;
-                    break;
-                } else if (winner == WINNER::O_WINNER) {
-                    cout << "O is the winner" << endl;
-                    player_winner = WINNER_PLR::PLR_O;
-                    break;
-                } else {
-                    try {
-                        board.check_board_is_full();
-                    } catch (GameOverError) {
+                switch (winner) {
+                    case WINNER::X_WINNER:
+                        endGame = true;
+                        player = WINNER_PLR::PLR_X;
                         break;
-                    }
+                    case WINNER::O_WINNER:
+                        endGame = true;
+                        player = WINNER_PLR::PLR_O;
+                        break;
+                    case WINNER::NONE:
+                        break;
                 }
             }
         }
 
-
-
         gui.clear();
         cout << "" << endl;
         cout << " Thanks for playing!" << endl;
-        if (player_winner == PLR_X) { cout << "     X has won!" << endl; }
-        if (player_winner == PLR_O) { cout << "     O has won!" << endl; }
-        if (player_winner == TIE) { cout << "     It's a tie!" << endl; }
+        if (player == PLR_X) { cout << "     X has won!" << endl; }
+        if (player == PLR_O) { cout << "     Y has won!" << endl; }
+        if (player == TIE) { cout << "     It's a tie!" << endl; }
         cout << "" << endl;
         cout << " Press any key to continue.." << endl;
         gui.pause();
+
     }
 }
